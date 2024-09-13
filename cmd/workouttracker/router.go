@@ -6,7 +6,7 @@ import (
 	"net/http"
 )
 
-func Root(){
+func Router(){
 	workoutRouter := http.NewServeMux()
 	workoutRouter.HandleFunc("GET /list", ListWorkout)
 	workoutRouter.HandleFunc("POST /create", CreateWorkout)

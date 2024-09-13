@@ -1,7 +1,11 @@
 package main
 
-import "kibzrael/workouttracker/cmd/workouttracker"
+import (
+	"kibzrael/workouttracker/cmd/data"
+	"kibzrael/workouttracker/cmd/workouttracker"
+)
 
 func main() {
-	workouttracker.Root()
+	data.InitDB()
+	workouttracker.Router()
 }
