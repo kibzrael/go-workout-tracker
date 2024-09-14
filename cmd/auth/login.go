@@ -22,7 +22,16 @@ func Login(res http.ResponseWriter, req *http.Request){
 
 	var details data.User
 	var user data.User
-	json.Unmarshal(body, &details)
+	if err := json.Unmarshal(body, &details); err != nil{
+		utils.ApiPanic(&res, &err)
+		return
+	}
+	if details.Email == "" || details.Password == "" {
+		err := errors.New("email and password are required")
+		utils.ApiPanic(&res, &err)
+		return
+	}
+	details.Password = utils.HashPassword(details.Password)
 
 	db := data.DB()
 	result := db.Where("email = ? AND password = ?", details.Email, details.Password).First(&user)

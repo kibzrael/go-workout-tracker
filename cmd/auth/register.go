@@ -25,6 +25,12 @@ func Register(res http.ResponseWriter, req *http.Request){
 		utils.ApiPanic(&res, &err)
 		return
 	}
+	if user.Email == "" || user.Password == "" {
+		err := errors.New("email and password are required")
+		utils.ApiPanic(&res, &err)
+		return
+	}
+	user.Password = utils.HashPassword(user.Password)
 	
 	db := data.DB()
 	if result := db.Create(&user); result.Error == nil{
