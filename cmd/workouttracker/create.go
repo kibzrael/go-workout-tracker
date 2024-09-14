@@ -7,7 +7,7 @@ import (
 )
 
 func CreateWorkout(res http.ResponseWriter, req *http.Request){
-	userId, _ := req.Context().Value(auth.AuthUserId).(int)
+	userId, _ := req.Context().Value(auth.AuthUserId).(uint)
 
 	fmt.Fprintln(res, "Create Workout userId:", userId)
 }

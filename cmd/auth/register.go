@@ -7,7 +7,9 @@ import (
 	"kibzrael/workouttracker/cmd/data"
 	"kibzrael/workouttracker/cmd/utils"
 	"net/http"
+	"time"
 
+	"github.com/golang-jwt/jwt/v5"
 	"gorm.io/gorm"
 )
 
@@ -26,7 +28,16 @@ func Register(res http.ResponseWriter, req *http.Request){
 	
 	db := data.DB()
 	if result := db.Create(&user); result.Error == nil{
-		response := map[string]any{"message": "Registration successfully", "user": user}
+		loggedAt := time.Now()
+		db.Model(&data.User{}).Where("id = ?", user.ID).Update("logged_at", loggedAt)
+		payload := jwt.MapClaims{"id": user.ID, "email": user.Email, "loggedAt": loggedAt.Unix()}
+		token, err := utils.EncodeJWT(payload)
+		if err != nil {
+			utils.ApiPanic(&res, &err)
+			return
+		}
+		user.LoggedAt = &loggedAt
+		response := map[string]any{"message": "Registration successfully", "user": user, "token": token}
 		res.WriteHeader(http.StatusCreated)
 		utils.JsonResponse(&res, response)
 	} else if errors.Is(result.Error, gorm.ErrDuplicatedKey){
