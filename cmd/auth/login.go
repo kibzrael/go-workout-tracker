@@ -1,9 +1,7 @@
 package auth
 
 import (
-	"encoding/json"
 	"errors"
-	"io"
 	"kibzrael/workouttracker/cmd/data"
 	"kibzrael/workouttracker/cmd/utils"
 	"net/http"
@@ -14,15 +12,9 @@ import (
 )
 
 func Login(res http.ResponseWriter, req *http.Request){
-	body, err := io.ReadAll(req.Body)
-	if err != nil{
-		utils.ApiPanic(&res, &err)
-		return
-	}
-
 	var details data.User
 	var user data.User
-	if err := json.Unmarshal(body, &details); err != nil{
+	if err := utils.DecodeJsonBody(req, &details); err != nil{
 		utils.ApiPanic(&res, &err)
 		return
 	}

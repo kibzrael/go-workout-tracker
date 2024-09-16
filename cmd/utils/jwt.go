@@ -28,6 +28,6 @@ func DecodeJWT(tokenString string) (jwt.MapClaims, error) {
 		return nil, errors.New("invalid token")
 	}
 	
-	claims := token.Claims.(jwt.MapClaims)
+	claims, _ := token.Claims.(jwt.MapClaims)
 	return claims, nil
 }
